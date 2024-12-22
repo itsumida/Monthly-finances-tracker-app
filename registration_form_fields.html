@@ -1,0 +1,43 @@
+<div class="form-floating mt-2">
+    <select class="form-select {% if "member_id" in errors %}is-invalid{% endif %}" name="member_id" required>
+      <option value="">Select the household member from the list</option>
+      {% for member in members %}
+      <option value="{{ member.id }}" {% if member.id == form.member_id %} selected{% endif %}>{{ member.name }}</option>
+      {% endfor %}
+    </select>
+    <label>Household member</label>
+    <div class="invalid-feedback">Please select a household member from the list.</div>
+</div>
+
+<div class="form-floating mt-2">
+  <input class="form-control {% if "transaction_date" in errors %}is-invalid{% endif %}" name="transaction_date" type="date" value="{{ form.transaction_date }}" required>
+  <label>Date</label>
+  <div class="invalid-feedback">Please enter a valid date.</div>
+</div>
+
+<div class="form-floating mt-2">
+  <select class="form-select {% if "category_id" in errors %}is-invalid{% endif %}" name="category_id" required>
+    <option value="">Select one from the list</option>
+    {% for category in categories %}
+    <option value="{{ category.id }}" {% if category.id == form.category_id %} selected{% endif %}>{{ category.title }}</option>
+    {% endfor %}
+  </select>
+  <label>Category</label>
+  <div class="invalid-feedback">Please select a category from the list.</div>
+</div>
+
+<div class="form-floating mt-2">
+  <input class="form-control {% if "description" in errors %}is-invalid{% endif %}" name="description" type="text" value="{{ form.description }}">
+  <label>Description</label>
+  <div class="invalid-feedback">Please enter a valid description.</div>
+</div>
+
+<div class="form-floating mt-2">
+  <input class="form-control {% if "amount" in errors %}is-invalid{% endif %}" name="amount" type="number" value="{{ form.amount }}" min="0.01" step="0.01" required>
+  <label>Amount</label>
+  <div class="invalid-feedback">Please enter a valid amount.</div>
+</div>
+
+<div class="mt-4">
+  <button type="submit" class="btn btn-primary">Register</button>
+</div>

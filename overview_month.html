@@ -1,0 +1,171 @@
+{% extends "base.html" %} {% block title %}Monthly Overview{% endblock %} {%
+block main %}
+<div class="container-fluid text-center bg-light p-5">
+  <h1 class="fw-light text-bi-dark-blue">
+    {{ month_start.strftime("%B %Y") }}
+  </h1>
+</div>
+
+<div class="container-lg my-3">
+  <div class="row">
+    <div class="col-6 text-start">
+      <a
+        href="{{ url_for('overview_month', year=prev_month_start.year, month=prev_month_start.month) }}"
+        class="btn btn-secondary"
+        >Previous month</a
+      >
+    </div>
+    <div class="col-6 text-end">
+      <a
+        href="{{ url_for('overview_month', year=next_month_start.year, month=next_month_start.month) }}"
+        class="btn btn-secondary"
+        >Next month</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="container-lg my-3">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover">
+      <caption class="caption-top">
+        Transactions
+      </caption>
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Description</th>
+          <th scope="col" class="text-end">Income</th>
+          <th scope="col" class="text-end">Expense</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in transactions %}
+        <tr>
+          <td>{{ transaction.transaction_date }}</td>
+          <td>{{ transaction.name }}</td>
+          <td>{{ transaction.category_title }}</td>
+          <td>{{ transaction.description }}</td>
+          <td class="text-end">
+            {{ "{:,.2f}".format(transaction.income) if transaction.income }}
+          </td>
+          <td class="text-end">
+            {{ "{:,.2f}".format(transaction.expense) if transaction.expense }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot class="table-light">
+        <tr>
+          <th scope="row" colspan="4">Total</th>
+          <td class="text-end">
+            {{ "{:,.2f}".format(income_total) if income_total }}
+          </td>
+          <td class="text-end">
+            {{ "{:,.2f}".format(expense_total) if expense_total }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<div class="container-lg my-3">
+  <div class="row">
+    <div class="col-6">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover">
+          <caption class="caption-top">
+            Income summary
+          </caption>
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col" class="text-end">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in income_summary %}
+            <tr>
+              <td>{{ row.title }}</td>
+              <td class="text-end">{{ "{:,.2f}".format(row.amount) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th scope="row">Total</th>
+              <td class="text-end">
+                {{ "{:,.2f}".format(income_total) if income_total }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover">
+          <caption class="caption-top">
+            Expenses summary
+          </caption>
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col" class="text-end">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in expense_summary %}
+            <tr>
+              <td>{{ row.title }}</td>
+              <td class="text-end">{{ "{:,.2f}".format(row.amount) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <th scope="row">Total</th>
+              <td class="text-end">
+                {{ "{:,.2f}".format(expense_total) if expense_total }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 text-center">
+      <div id="income-chart"></div>
+      <script>
+        Plotly.newPlot(
+            'income-chart',
+            [{
+                labels: {{ income_summary_titles|tojson }},
+                values: {{ income_summary_amounts|tojson }},
+                type: 'pie',
+                hole: 0.7
+            }]
+        )
+      </script>
+    </div>
+    <div class="col-6 text-center">
+      <div id="expense-chart"></div>
+      <script>
+        Plotly.newPlot(
+            'expense-chart',
+            [{
+              labels: {{ expense_summary_titles|tojson }},
+              values: {{ expense_summary_amounts|tojson }},
+              type: 'pie',
+              hole: 0.7
+            }]
+        )
+      </script>
+    </div>
+  </div>
+</div>
+{% endblock %}

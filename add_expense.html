@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Expense Registration{% endblock %}
+
+{% block main %}
+<div class="container-fluid text-center bg-light p-5">
+<h1 class="fw-light text-bi-dark-blue">Expense Registration</h1>
+</div>
+
+{% if errors %}
+<div class="container-lg alert alert-danger">
+The form contains errors. Please fix them and try submitting again!
+</div>
+{% endif %}
+
+{% if "__fk__" in errors %}
+<div class="container-lg alert alert-warning">
+Please make sure to select valid options from the drop-down menus.
+</div>
+{% endif %}
+
+<div class="container-lg mt-3">
+<form action="{{ url_for('add_expense') }}" method="post">
+{% include "include/registration_form_fields.html" %}
+</form>
+</div>
+{% endblock %}
